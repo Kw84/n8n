@@ -1,137 +1,94 @@
-# ⚡ n8n no GitHub Codespaces
+# 🚀 n8n no GitHub Codespaces
 
-Este repositório contém a configuração mínima necessária para rodar o **[n8n](https://n8n.io/)** dentro do **GitHub Codespaces**, com **persistência de dados**, **segurança aplicada** e **setup automático**.  
-
-Cada pessoa deve criar **sua própria instância** (via fork deste repositório) para manter **dados, credenciais e workflows isolados**.  
+Este repositório permite rodar o [n8n](https://n8n.io) diretamente no **GitHub Codespaces**, sem precisar instalar nada localmente.
 
 ---
 
-## ✅ Pré-requisitos
+## 📦 Pré-requisitos
 
-Antes de começar, você precisa:
-
-1. Ter uma conta no **GitHub**.  
-2. Ativar o recurso **GitHub Codespaces** na sua conta (disponível em planos gratuitos e pagos, com limite de horas/mês).  
-3. Saber que o **Codespaces hiberna automaticamente** após inatividade (padrão: 30 minutos, configurável até 4h).  
+1. Conta no **GitHub**.
+2. Acesso ao **GitHub Codespaces** (pode ser limitado em contas gratuitas).
+3. Fazer o **fork** deste repositório para a sua conta.
 
 ---
 
-## 📂 Estrutura do Repositório
+## ⚙️ Configuração dos Secrets no GitHub
+
+Antes de abrir o Codespace, configure os **Secrets**:
+
+1. Vá em **Settings → Secrets and variables → Codespaces**.
+2. Clique em **New repository secret** e adicione:
+
+| Nome               | Descrição                                                             | Exemplo                                |
+|--------------------|------------------------------------------------------------------------|----------------------------------------|
+| `N8N_ENCRYPTION_KEY` | Chave de criptografia obrigatória para senhas e credenciais no n8n.   | `minha-chave-super-secreta`            |
+
+> ⚠️ **Importante:** Nunca versione ou exponha essa chave.  
+Ela garante a segurança das credenciais armazenadas no n8n.
+
+---
+
+## 🏗️ Estrutura do Repositório
 
 n8n/
 ├─ .devcontainer/
-│ ├─ devcontainer.json # Configura imagem base, portas e inicialização
-│ └─ start-n8n.sh # Script de inicialização do n8n
-├─ .gitignore # Ignora dados, credenciais e arquivos sensíveis
-└─ README.md # Documentação
+│  ├─ devcontainer.json   # Configura imagem base, portas e inicialização
+│  └─ start-n8n.sh        # Script de inicialização do n8n
+├─ .gitignore             # Ignora dados, credenciais e arquivos sensíveis
+└─ README.md              # Documentação
 
-markdown
-Copiar
-Editar
 
 ---
 
-## 🛠️ Passo 1: Fork do Repositório
+## ▶️ Como usar
 
-1. Clique em **Fork** no canto superior direito.  
-2. O repositório será copiado para sua conta.  
-
-> ⚠️ **Importante:** nunca trabalhe direto no repositório original, sempre no seu fork.  
-
----
-
-## 🔑 Passo 2: Configurar Secrets no Codespaces
-
-Antes de criar o Codespace, defina seus **segredos de ambiente** (para segurança):
-
-1. Vá em: **Settings → Codespaces → Secrets → New repository secret**  
-2. Crie pelo menos:
-
-| Nome | Valor | Obrigatório | Descrição |
-|------|-------|-------------|-----------|
-| `N8N_ENCRYPTION_KEY` | string aleatória e longa (ex.: `openssl rand -base64 32`) | ✅ | Criptografa credenciais salvas no n8n |
-
-> 🔒 **Nunca** coloque esse valor no código ou faça commit.  
-> Sempre use **Secrets do Codespaces**.  
+1. Faça o **Fork** do repositório.
+2. Configure os **Secrets**.
+3. Crie o **Codespace**.
+4. Aguarde a instalação automática do n8n.
+5. Acesse pelo **Port 5678** → abrirá a interface web do n8n.
+6. Crie seus **workflows**.
+7. Se o Codespace hibernar, basta reabrir e acessar novamente.
 
 ---
 
-## 💻 Passo 3: Criar o Codespace
+## ⏳ Tempo de Atividade do Codespaces
 
-1. No seu fork, clique em **Code → Codespaces → Create Codespace on main**.  
-2. O Codespace será iniciado:  
-   - Instala automaticamente o **n8n**.  
-   - Configura a porta **5678**.  
-   - Roda o script `start-n8n.sh`.  
+- Por padrão, o Codespaces **hiberna após 30 minutos de inatividade**.  
+- É possível ajustar:
+  - Vá em **Settings → Codespaces → Idle timeout**.
+  - Escolha um tempo maior (até **240 minutos** = 4 horas).  
 
----
-
-## ▶️ Passo 4: Acessar o n8n
-
-1. Após o Codespace iniciar, vá até a aba **Ports**.  
-2. Localize a porta **5678 (n8n)**.  
-3. Clique em **Open in Browser**.  
-4. Faça login com o usuário/senha configurados (se ativou autenticação).  
+⚠️ Mesmo ajustando, ao encerrar o Codespace manualmente ele será parado.
 
 ---
 
-## 🔄 Passo 5: Hibernação e Tempo de Atividade
+## 🔒 Segurança
 
-- Por padrão, o **Codespaces hiberna após 30 minutos de inatividade**.  
-- Para aumentar:  
-  1. Vá em **GitHub → Settings → Codespaces → Default idle timeout**  
-  2. Ajuste para até **4 horas** (máximo permitido).  
-
-Quando o Codespace hiberna:  
-- Seus dados permanecem salvos em `.n8n-data/`.  
-- Ao reabrir, o `start-n8n.sh` reinicia automaticamente o n8n.  
+- Apenas você terá acesso ao seu Codespace e à interface do n8n.  
+- Outros usuários não conseguem criar contas nem acessar o seu ambiente.  
+- Cada pessoa que quiser usar deve **fazer o fork e rodar seu próprio Codespace**.  
 
 ---
 
-## ⚙️ Arquivos Detalhados
+## 🧩 Fluxo de Uso (resumido)
 
-### `.devcontainer/devcontainer.json`
-
-- Define a imagem base (`Node.js 20`).  
-- Expõe a porta `5678`.  
-- Configura comandos pós-criação (`npm install -g n8n`).  
-- Executa o script `start-n8n.sh`.  
-
-### `.devcontainer/start-n8n.sh`
-
-- Define a pasta persistente `.n8n-data/`.  
-- Exige `N8N_ENCRYPTION_KEY`.  
-- Evita múltiplas instâncias.  
-- Inicia o n8n na porta `5678`.  
-
-### `.gitignore`
-
-- Impede versionamento de:  
-  - **dados** (`.n8n`, `.n8n-data`, `database.sqlite`)  
-  - **credenciais** (`.env`, `*.pem`, `*.key`, `secrets.*`)  
-  - **logs temporários**  
-  - **dependências** (`node_modules/`)  
+1. **Fork** do repositório.  
+2. Configurar **Secrets**.  
+3. Criar **Codespace**.  
+4. Acessar porta **5678**.  
+5. Criar workflows.  
+6. Reabrir Codespace quando hibernar.  
 
 ---
 
-## 📌 Boas Práticas
+## 💡 Dicas úteis
 
-- Cada usuário deve criar **sua própria instância** (fork + Codespace).  
-- Nunca exponha a porta **5678** como **Public** sem antes ativar autenticação.  
-- Use sempre **Secrets** para variáveis sensíveis.  
-- Se precisar reiniciar manualmente:  
+- Para evitar expor dados sensíveis, **não edite o `.gitignore`** sem saber o que está fazendo.  
+- Use o Codespace apenas para desenvolvimento/testes.  
+- Para produção, o ideal é usar **Docker** ou **servidor dedicado**.  
 
-```bash
-bash .devcontainer/start-n8n.sh
-🚦 Fluxo de Uso (resumido)
-Fork do repositório.
+---
 
-Configurar Secrets.
+✍️ Autor: *Kelber Weike*
 
-Criar Codespace.
-
-Acessar porta 5678.
-
-Criar workflows.
-
-Reabrir Codespace quando hibernar.
