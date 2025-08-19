@@ -1,8 +1,8 @@
 # ---- n8n: nunca versionar credenciais e dados ----
 # diretórios/pastas comuns de dados do n8n
-.n8n
-.n8n-data
-n8n-data
+.n8n/
+.n8n-data/
+n8n-data/
 data/
 backup/
 .local/
@@ -10,12 +10,17 @@ backup/
 # banco de dados/estado
 database.sqlite
 database.sqlite-*
-.sqlite
+*.sqlite
 *.sqlite3
+
+# binários/anexos (geralmente ficam dentro de .n8n-data, mas não custa)
+binaryData/
 
 # credenciais/segredos
 .env
 .env.*
+**/.env
+**/.env.*
 *.key
 *.pem
 *.p12
@@ -23,10 +28,12 @@ database.sqlite-*
 secrets.*
 credentials.json
 *.token.json
+.git-credentials
 
 # logs/outputs temporários
 logs/
 *.log
+n8nEventLog*.log
 
 # node/npm
 node_modules/
@@ -35,3 +42,11 @@ npm-debug.log*
 # Docker / volumes locais (se usar)
 docker-data/
 volumes/
+
+# arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# --- allowlists úteis (mantêm arquivos de exemplo) ---
+!.env.example
+!**/.env.example
