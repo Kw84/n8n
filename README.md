@@ -1,6 +1,6 @@
 # 🚀 n8n no GitHub Codespaces
 
-Este repositório permite rodar o [n8n](https://n8n.io) diretamente no **GitHub Codespaces**, sem precisar instalar nada localmente.
+Este projeto permite executar [n8n](https://n8n.io) , uma ferramenta de automação de workflows low-code, diretamente no GitHub Codespaces. Ideal para quem quer testar ou usar o n8n sem precisar configurar Docker ou instalar localmente.
 
 ---
 
