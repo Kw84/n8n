@@ -37,7 +37,7 @@ n8n/
 │  └─ start-n8n.sh        # Script de inicialização do n8n
 ├─ .gitignore             # Ignora dados, credenciais e arquivos sensíveis
 └─ README.md              # Documentação
-
+```
 ---
 
 ## ▶️ Como usar
