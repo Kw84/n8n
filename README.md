@@ -30,13 +30,13 @@ Ela garante a segurança das credenciais armazenadas no n8n.
 
 ## 🏗️ Estrutura do Repositório
 
+```text
 n8n/
 ├─ .devcontainer/
 │  ├─ devcontainer.json   # Configura imagem base, portas e inicialização
 │  └─ start-n8n.sh        # Script de inicialização do n8n
 ├─ .gitignore             # Ignora dados, credenciais e arquivos sensíveis
 └─ README.md              # Documentação
-
 
 ---
 
