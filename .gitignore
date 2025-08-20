@@ -50,3 +50,7 @@ Thumbs.db
 # --- allowlists úteis (mantêm arquivos de exemplo) ---
 !.env.example
 !**/.env.example
+
+# n8n local data
+.n8n-data/
+.n8n/
