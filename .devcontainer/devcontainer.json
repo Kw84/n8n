@@ -1,6 +1,7 @@
 {
   "name": "n8n-codespace",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+
   "forwardPorts": [5678],
   "portsAttributes": {
     "5678": {
@@ -10,6 +11,16 @@
       "onAutoForward": "openPreview"
     }
   },
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && npm i -g n8n@1.106.3 && mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(which node) ~/.vscode-remote/bin/fallback/node",
-  "postStartCommand": "bash .devcontainer/start-n8n.sh"
+
+  // 1) Cria um node de fallback ANTES de anexar (resolve o balão de erro em forks)
+  "onCreateCommand": "mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(which node) ~/.vscode-remote/bin/fallback/node",
+
+  // 2) Instala o que precisamos
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && npm i -g n8n@1.106.3",
+
+  // 3) Starta o n8n quando o container sobe
+  "postStartCommand": "bash .devcontainer/start-n8n.sh",
+
+  // 4) (belt & suspenders) Se por algum motivo o VS Code anexar antes de 1), garante o fallback
+  "postAttachCommand": "bash -lc 'ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(which node) ~/.vscode-remote/bin/fallback/node)'"
 }
