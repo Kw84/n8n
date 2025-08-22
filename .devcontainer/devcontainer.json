@@ -1,22 +1,14 @@
 {
   "name": "n8n-codespace",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
-
   "forwardPorts": [5678],
   "portsAttributes": {
-    "5678": {
-      "label": "n8n",
-      "protocol": "https",
-      "visibility": "public",
-      "onAutoForward": "openPreview"
-    }
+    "5678": { "label": "n8n", "onAutoForward": "openPreview" }
   },
-
-  "onCreateCommand": "bash -lc \"mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node; mkdir -p /workspaces/.codespaces/shared; echo 'process.exit(0)' > /workspaces/.codespaces/shared/codespaceStatusTool.js\"",
-
-  "postCreateCommand": "bash -lc \"sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && sudo npm i -g n8n@1.106.3 || true\"",
-
-  "postStartCommand": "bash -lc \"WS=\\\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\\\"; echo 'postStart '$(date -Is) >> /tmp/devcontainer.mark; chmod +x \\\"$WS/.devcontainer/start-n8n.sh\\\" || true; pgrep -f 'n8n start' >/dev/null 2>&1 || (cd \\\"$WS\\\" && nohup .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &)\"",
-
-  "postAttachCommand": "bash -lc \"ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node); [ -f /workspaces/.codespaces/shared/codespaceStatusTool.js ] || (mkdir -p /workspaces/.codespaces/shared && echo 'process.exit(0)' > /workspaces/.codespaces/shared/codespaceStatusTool.js); WS=\\\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\\\"; pgrep -f 'n8n start' >/dev/null 2>&1 || (cd \\\"$WS\\\" && nohup .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &)\""
+  "containerEnv": {
+    "N8N_HOST": "0.0.0.0"
+  },
+  "postCreateCommand": "npm i -g n8n@1.106.3",
+  "postStartCommand": "bash .devcontainer/start-n8n.sh",
+  "remoteUser": "node"
 }
