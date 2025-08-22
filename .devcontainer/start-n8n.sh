@@ -6,6 +6,7 @@ HOST="0.0.0.0"
 
 # pasta de dados persiste no workspace
 export N8N_USER_FOLDER="${N8N_USER_FOLDER:-$PWD/.n8n-data}"
+mkdir -p "$N8N_USER_FOLDER"
 
 # se não houver Secret, usa uma chave de dev (apenas para testes)
 export N8N_ENCRYPTION_KEY="${N8N_ENCRYPTION_KEY:-changeme-dev-only}"
@@ -24,4 +25,11 @@ else
 fi
 
 echo "Iniciando n8n em ${HOST}:${PORT}..."
-exec n8n start --host "$HOST" --port "$PORT"
+
+# Se o binário global existir, usa; senão, usa npx (sem depender de instalação prévia)
+if command -v n8n >/dev/null 2>&1; then
+  exec n8n start --host "$HOST" --port "$PORT"
+else
+  echo "n8n global não encontrado; usando npx (fallback)."
+  exec npx --yes n8n@1.106.3 start --host "$HOST" --port "$PORT"
+fi
