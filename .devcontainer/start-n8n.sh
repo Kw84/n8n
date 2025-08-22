@@ -7,6 +7,7 @@ HOST=${HOST:-"0.0.0.0"}
 export N8N_USER_FOLDER="${N8N_USER_FOLDER:-$PWD/.n8n-data}"
 mkdir -p "$N8N_USER_FOLDER"
 
+# chave de dev (use um Secret em produção)
 export N8N_ENCRYPTION_KEY="${N8N_ENCRYPTION_KEY:-changeme-dev-only}"
 
 # já está rodando?
