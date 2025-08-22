@@ -4,13 +4,14 @@ set -euo pipefail
 PORT=${PORT:-5678}
 HOST=${HOST:-"0.0.0.0"}
 
+# pasta de dados persiste no workspace
 export N8N_USER_FOLDER="${N8N_USER_FOLDER:-$PWD/.n8n-data}"
 mkdir -p "$N8N_USER_FOLDER"
 
-# chave de dev (use um Secret em produção)
+# chave de dev; em produção use Secret N8N_ENCRYPTION_KEY
 export N8N_ENCRYPTION_KEY="${N8N_ENCRYPTION_KEY:-changeme-dev-only}"
 
-# já está rodando?
+# evita iniciar duas vezes
 if ps -ef | grep -v grep | grep -q "n8n start.*--port $PORT"; then
   echo "n8n já está rodando."
   exit 0
