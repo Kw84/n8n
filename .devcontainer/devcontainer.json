@@ -12,11 +12,15 @@
     }
   },
 
+  // Garante um "node" e um status tool stub (mata o balão do terminal)
   "onCreateCommand": "bash -lc 'mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node; mkdir -p /workspaces/.codespaces/shared; echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js'",
 
+  // Dependências (se a global falhar seguimos com fallback via npx)
   "postCreateCommand": "bash -lc 'sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && sudo npm i -g n8n@1.106.3 || true'",
 
-  "postStartCommand": "bash -lc 'nohup .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &'",
+  // Usa caminho ABSOLUTO do workspace para evitar falhas de diretório.
+  "postStartCommand": "bash -lc 'chmod +x ${containerWorkspaceFolder}/.devcontainer/start-n8n.sh; pgrep -f \"n8n start\" >/dev/null 2>&1 || (nohup ${containerWorkspaceFolder}/.devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &)'",
 
-  "postAttachCommand": "bash -lc 'ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node); [ -f /workspaces/.codespaces/shared/codespaceStatusTool.js ] || (mkdir -p /workspaces/.codespaces/shared && echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js)'"
+  // Cinto e suspensório: garante fallback e, se ainda não rodou, inicia agora.
+  "postAttachCommand": "bash -lc 'ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node); [ -f /workspaces/.codespaces/shared/codespaceStatusTool.js ] || (mkdir -p /workspaces/.codespaces/shared && echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js); pgrep -f \"n8n start\" >/dev/null 2>&1 || (nohup ${containerWorkspaceFolder}/.devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &)'"
 }
