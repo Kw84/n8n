@@ -7,20 +7,19 @@
     "5678": {
       "label": "n8n",
       "protocol": "https",
-      "visibility": "public",
       "onAutoForward": "openPreview"
     }
   },
 
-  // 1) Cria um node de fallback ANTES de anexar (resolve o balão de erro em forks)
+  // Garante que exista um "node" em ~/.vscode-remote/bin/* (evita o balão do terminal)
   "onCreateCommand": "mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(which node) ~/.vscode-remote/bin/fallback/node",
 
-  // 2) Instala o que precisamos
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && npm i -g n8n@1.106.3",
+  // Dependências do ambiente
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && sudo npm i -g n8n@1.106.3",
 
-  // 3) Starta o n8n quando o container sobe
+  // Sobe o n8n quando o container inicia
   "postStartCommand": "bash .devcontainer/start-n8n.sh",
 
-  // 4) (belt & suspenders) Se por algum motivo o VS Code anexar antes de 1), garante o fallback
+  // Cinto e suspensório contra o aviso do node
   "postAttachCommand": "bash -lc 'ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(which node) ~/.vscode-remote/bin/fallback/node)'"
 }
