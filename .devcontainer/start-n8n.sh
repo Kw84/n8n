@@ -7,7 +7,7 @@ HOST="0.0.0.0"
 # pasta de dados persiste no workspace
 export N8N_USER_FOLDER="${N8N_USER_FOLDER:-$PWD/.n8n-data}"
 
-# defina um Secret N8N_ENCRYPTION_KEY nos Settings → Secrets → Codespaces; este fallback é só p/ dev
+# se não houver Secret, usa uma chave de dev (apenas para testes)
 export N8N_ENCRYPTION_KEY="${N8N_ENCRYPTION_KEY:-changeme-dev-only}"
 
 # evita iniciar duas vezes (com fallback caso não exista pgrep)
