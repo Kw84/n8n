@@ -12,15 +12,11 @@
     }
   },
 
-  // 1) Garante um "node" e um status tool stub (elimina o balão do terminal)
   "onCreateCommand": "bash -lc 'mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node; mkdir -p /workspaces/.codespaces/shared; echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js'",
 
-  // 2) Prepara dependências (se a instalação global falhar, seguimos com fallback)
   "postCreateCommand": "bash -lc 'sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && sudo npm i -g n8n@1.106.3 || true'",
 
-  // 3) Sobe o n8n em background e tenta tornar a porta pública via gh CLI (se disponível)
-  "postStartCommand": "bash -lc 'setsid .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null & (sleep 3; if command -v gh >/dev/null 2>&1 && [ -n \"${CODESPACE_NAME:-}\" ]; then if [ -n \"${GITHUB_TOKEN:-}\" ]; then echo \"$GITHUB_TOKEN\" | gh auth login --with-token >/dev/null 2>&1 || true; fi; gh codespace ports visibility -c \"$CODESPACE_NAME\" 5678:public >/dev/null 2>&1 || true; fi) &'",
+  "postStartCommand": "bash -lc 'nohup .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &'",
 
-  // 4) Cinto e suspensório pro "node" e pro status tool
   "postAttachCommand": "bash -lc 'ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node); [ -f /workspaces/.codespaces/shared/codespaceStatusTool.js ] || (mkdir -p /workspaces/.codespaces/shared && echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js)'"
 }
