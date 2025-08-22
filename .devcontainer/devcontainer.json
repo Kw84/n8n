@@ -12,15 +12,11 @@
     }
   },
 
-  // 1) Node de fallback + status tool "stub" (mata o balão do terminal)
-  "onCreateCommand": "bash -lc 'mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node; mkdir -p /workspaces/.codespaces/shared; echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js'",
+  "onCreateCommand": "bash -lc \"mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node; mkdir -p /workspaces/.codespaces/shared; echo 'process.exit(0)' > /workspaces/.codespaces/shared/codespaceStatusTool.js\"",
 
-  // 2) Dependências (se a global falhar, usamos npx no start)
-  "postCreateCommand": "bash -lc 'sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && sudo npm i -g n8n@1.106.3 || true'",
+  "postCreateCommand": "bash -lc \"sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && sudo npm i -g n8n@1.106.3 || true\"",
 
-  // 3) Start automático, forçando o diretório do workspace e registrando marcador
-  "postStartCommand": "bash -lc 'WS=${containerWorkspaceFolder:-/workspaces/$(ls -1 /workspaces 2>/dev/null | head -n1)}; mkdir -p /tmp; echo \"postStart $(date -Is)\" >> /tmp/devcontainer.mark; chmod +x \"$WS/.devcontainer/start-n8n.sh\"; pgrep -f \"n8n start\" >/dev/null 2>&1 || (cd \"$WS\" && nohup .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &)'",
+  "postStartCommand": "bash -lc \"WS=\\\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\\\"; echo 'postStart '$(date -Is) >> /tmp/devcontainer.mark; chmod +x \\\"$WS/.devcontainer/start-n8n.sh\\\" || true; pgrep -f 'n8n start' >/dev/null 2>&1 || (cd \\\"$WS\\\" && nohup .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &)\"",
 
-  // 4) Cinto e suspensório: garante fallback e sobe o n8n caso ainda não tenha subido
-  "postAttachCommand": "bash -lc 'ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node); [ -f /workspaces/.codespaces/shared/codespaceStatusTool.js ] || (mkdir -p /workspaces/.codespaces/shared && echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js); WS=${containerWorkspaceFolder:-/workspaces/$(ls -1 /workspaces 2>/dev/null | head -n1)}; pgrep -f \"n8n start\" >/dev/null 2>&1 || (cd \"$WS\" && nohup .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &); if command -v gh >/dev/null 2>&1 && [ -n \"${CODESPACE_NAME:-}\" ]; then if [ -n \"${GITHUB_TOKEN:-}\" ]; then echo \"$GITHUB_TOKEN\" | gh auth login --with-token >/dev/null 2>&1 || true; fi; gh codespace ports visibility -c \"$CODESPACE_NAME\" 5678:public >/dev/null 2>&1 || true; fi'"
+  "postAttachCommand": "bash -lc \"ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node); [ -f /workspaces/.codespaces/shared/codespaceStatusTool.js ] || (mkdir -p /workspaces/.codespaces/shared && echo 'process.exit(0)' > /workspaces/.codespaces/shared/codespaceStatusTool.js); WS=\\\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\\\"; pgrep -f 'n8n start' >/dev/null 2>&1 || (cd \\\"$WS\\\" && nohup .devcontainer/start-n8n.sh > /tmp/n8n.log 2>&1 < /dev/null &)\""
 }
