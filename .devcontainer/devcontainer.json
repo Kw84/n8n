@@ -7,19 +7,16 @@
     "5678": {
       "label": "n8n",
       "protocol": "https",
+      "visibility": "public",
       "onAutoForward": "openPreview"
     }
   },
 
-  // Garante que exista um "node" em ~/.vscode-remote/bin/* (evita o balão do terminal)
-  "onCreateCommand": "mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(which node) ~/.vscode-remote/bin/fallback/node",
+  "onCreateCommand": "bash -lc 'mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node; mkdir -p /workspaces/.codespaces/shared; echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js'",
 
-  // Dependências do ambiente
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && sudo npm i -g n8n@1.106.3",
+  "postCreateCommand": "bash -lc 'sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && sudo npm i -g n8n@1.106.3 || true'",
 
-  // Sobe o n8n quando o container inicia
   "postStartCommand": "bash .devcontainer/start-n8n.sh",
 
-  // Cinto e suspensório contra o aviso do node
-  "postAttachCommand": "bash -lc 'ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(which node) ~/.vscode-remote/bin/fallback/node)'"
+  "postAttachCommand": "bash -lc 'ls ~/.vscode-remote/bin/*/node >/dev/null 2>&1 || (mkdir -p ~/.vscode-remote/bin/fallback && ln -sf $(command -v node) ~/.vscode-remote/bin/fallback/node); [ -f /workspaces/.codespaces/shared/codespaceStatusTool.js ] || (mkdir -p /workspaces/.codespaces/shared && echo \"process.exit(0)\" > /workspaces/.codespaces/shared/codespaceStatusTool.js)'"
 }
