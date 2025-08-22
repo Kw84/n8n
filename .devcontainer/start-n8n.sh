@@ -1,17 +1,19 @@
-#!/usr/bin/env bash
-set -euo pipefail
+# 1) instalar n8n (se ainda não estiver instalado)
+npm i -g n8n@1.106.3
 
-# pasta de dados do n8n no workspace (persiste enquanto o Codespace existir)
-export N8N_USER_FOLDER="${N8N_USER_FOLDER:-$PWD/.n8n-data}"
+# 2) persistência dos dados no workspace
+export N8N_USER_FOLDER="$PWD/.n8n-data"
+mkdir -p "$N8N_USER_FOLDER"
 
-# chave de criptografia (exige o Secret; se faltar, falha com mensagem clara)
-: "${N8N_ENCRYPTION_KEY:?Defina o Secret N8N_ENCRYPTION_KEY em Settings → Secrets → Codespaces}"
+# 3) chave de criptografia (use um segredo forte; para teste, dá para exportar assim)
+export N8N_ENCRYPTION_KEY="coloque-uma-chave-bem-forte-aqui"
 
-# evita iniciar duas vezes se o container reiniciar rápido
-if pgrep -fa "n8n start" >/dev/null 2>&1; then
-  echo "n8n já está rodando; não vou iniciar outro processo."
-  exit 0
-fi
+# 4) variáveis específicas do Codespaces (normalmente já vêm do ambiente)
+export PORT=5678
+export WEBHOOK_URL="https://${CODESPACE_NAME}-${PORT}.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}/"
+export N8N_HOST="${CODESPACE_NAME}-${PORT}.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+export N8N_PROTOCOL="https"
+export N8N_PORT="$PORT"
 
-echo "Iniciando n8n em 0.0.0.0:5678..."
-n8n start --host 0.0.0.0 --port 5678
+# 5) subir o n8n
+n8n start --host 0.0.0.0 --port "$PORT"
