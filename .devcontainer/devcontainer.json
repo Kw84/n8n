@@ -1,18 +1,15 @@
- {
-   "name": "n8n-codespace",
-   "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
-   "forwardPorts": [5678],
-   "portsAttributes": {
-     "5678": {
-       "label": "n8n",
-       "protocol": "https",
-       "visibility": "public",
-       "onAutoForward": "openPreview"
-     }
-   },
--  "postCreateCommand": "npm i -g n8n@1.106.3",
--  "postStartCommand": "bash .devcontainer/start-n8n.sh",
--  "remoteUser": "node"
-+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && npm i -g n8n@1.106.3",
-+  "postStartCommand": "bash .devcontainer/start-n8n.sh"
- }
+{
+  "name": "n8n-codespace",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "forwardPorts": [5678],
+  "portsAttributes": {
+    "5678": {
+      "label": "n8n",
+      "protocol": "https",
+      "visibility": "public",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y procps && npm config set fund false audit false && npm i -g n8n@1.106.3",
+  "postStartCommand": "bash .devcontainer/start-n8n.sh"
+}
