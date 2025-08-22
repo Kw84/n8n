@@ -45,7 +45,7 @@ n8n/
 1. Faça o **Fork** do repositório.
 2. Configure os **Secrets**.
 3. Crie o **Codespace**.
-4. Aguarde a instalação automática do n8n.
+4. No teminal execute; npm i -g n8n@1.106.3
 5. Acesse pelo **Port 5678** → abrirá a interface web do n8n.
 6. Crie seus **workflows**.
 7. Se o Codespace hibernar, basta reabrir e acessar novamente.
