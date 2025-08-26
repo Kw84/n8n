@@ -1,19 +1,27 @@
-# 1) instalar n8n (se ainda não estiver instalado)
-npm i -g n8n@1.106.3
+#!/usr/bin/env bash
+set -euo pipefail
 
-# 2) persistência dos dados no workspace
-export N8N_USER_FOLDER="$PWD/.n8n-data"
-mkdir -p "$N8N_USER_FOLDER"
+# pasta de dados do n8n dentro do workspace (persiste enquanto o Codespace existir)
+export N8N_USER_FOLDER="${N8N_USER_FOLDER:-$PWD/.n8n-data}"
 
-# 3) chave de criptografia (use um segredo forte; para teste, dá para exportar assim)
-export N8N_ENCRYPTION_KEY="coloque-uma-chave-bem-forte-aqui"
+# exige a chave de criptografia (defina como Secret no Codespaces)
+: "${N8N_ENCRYPTION_KEY:?Defina o Secret N8N_ENCRYPTION_KEY em Settings → Secrets → Codespaces}"
 
-# 4) variáveis específicas do Codespaces (normalmente já vêm do ambiente)
-export PORT=5678
-export WEBHOOK_URL="https://${CODESPACE_NAME}-${PORT}.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}/"
-export N8N_HOST="${CODESPACE_NAME}-${PORT}.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
-export N8N_PROTOCOL="https"
-export N8N_PORT="$PORT"
+echo "Node $(node -v) | n8n $(n8n -v)"
 
-# 5) subir o n8n
-n8n start --host 0.0.0.0 --port "$PORT"
+# ===== Configura a URL pública do Codespaces para webhooks =====
+# Ex.: https://<CODESPACE_NAME>-5678.<GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN>
+if [[ -n "${CODESPACE_NAME:-}" && -n "${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-}" ]]; then
+  PORT="${PORT:-5678}"
+  PUBLIC_HOST="${CODESPACE_NAME}-${PORT}.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+  export N8N_PROTOCOL="https"
+  export WEBHOOK_URL="https://${PUBLIC_HOST}"
+  export N8N_EDITOR_BASE_URL="https://${PUBLIC_HOST}"
+  echo "WEBHOOK_URL: ${WEBHOOK_URL}"
+else
+  echo "AVISO: variáveis do Codespaces não disponíveis; se precisar de webhooks, defina WEBHOOK_URL e N8N_EDITOR_BASE_URL manualmente."
+fi
+# ===============================================================
+
+echo "Iniciando n8n em 0.0.0.0:5678 (dados em ${N8N_USER_FOLDER})"
+exec n8n start --host 0.0.0.0 --port 5678
